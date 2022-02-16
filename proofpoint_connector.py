@@ -17,7 +17,7 @@ from datetime import timedelta
 from bs4 import BeautifulSoup
 import requests
 import json
-from .proofpoint_consts import *
+from proofpoint_consts import *
 
 import phantom.app as phantom
 from phantom.base_connector import BaseConnector
