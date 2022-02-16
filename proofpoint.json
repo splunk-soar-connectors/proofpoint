@@ -8,7 +8,7 @@
     "app_version": "1.2.24",
     "utctime_updated": "2022-01-07T21:10:53.000000Z",
     "package_name": "phantom_proofpoint",
-    "python_version": "2.7",
+    "python_version": "3",
     "product_vendor": "Proofpoint",
     "product_name": "Targeted Attack Protection",
     "product_version_regex": ".*",

@@ -17,7 +17,7 @@ from datetime import timedelta
 from bs4 import BeautifulSoup
 import requests
 import json
-from proofpoint_consts import *
+from .proofpoint_consts import *
 
 import phantom.app as phantom
 from phantom.base_connector import BaseConnector
@@ -578,7 +578,7 @@ class ProofpointConnector(BaseConnector):
         action = self.get_action_identifier()
         action_execution_status = phantom.APP_SUCCESS
 
-        if action in action_mapping.keys():
+        if action in list(action_mapping.keys()):
             action_function = action_mapping[action]
             action_execution_status = action_function(param)
         return action_execution_status
