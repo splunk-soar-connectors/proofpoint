@@ -4,7 +4,7 @@
     "description": "This App integrates with Proofpoint to implement ingestion and investigative actions",
     "type": "network security",
     "publisher": "Splunk Community",
-    "main_module": "proofpoint_connector.pyc",
+    "main_module": "proofpoint_connector.py",
     "app_version": "1.2.24",
     "utctime_updated": "2022-01-07T21:10:53.000000Z",
     "package_name": "phantom_proofpoint",
