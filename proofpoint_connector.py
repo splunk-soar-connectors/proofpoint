@@ -424,7 +424,8 @@ class ProofpointConnector(BaseConnector):
             self._state['last_poll'] = start_at
 
         params = {
-            'sinceTime': self._state['last_poll']
+            'sinceTime': self._state['last_poll'],
+            'format': 'json'
         }
 
         # Connect to the server
@@ -578,7 +579,7 @@ class ProofpointConnector(BaseConnector):
         action = self.get_action_identifier()
         action_execution_status = phantom.APP_SUCCESS
 
-        if action in action_mapping.keys():
+        if action in list(action_mapping.keys()):
             action_function = action_mapping[action]
             action_execution_status = action_function(param)
         return action_execution_status
