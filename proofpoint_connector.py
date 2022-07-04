@@ -424,7 +424,8 @@ class ProofpointConnector(BaseConnector):
             self._state['last_poll'] = start_at
 
         params = {
-            'sinceTime': self._state['last_poll']
+            'sinceTime': self._state['last_poll'],
+            'format': 'json'
         }
 
         # Connect to the server
