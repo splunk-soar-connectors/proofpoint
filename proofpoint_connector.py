@@ -12,18 +12,17 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
-from datetime import datetime
-from datetime import timedelta
-from bs4 import BeautifulSoup
-import requests
 import json
-from proofpoint_consts import *
+import sys
+from datetime import datetime, timedelta
 
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
+import requests
+from bs4 import BeautifulSoup, UnicodeDammit
 from phantom.action_result import ActionResult
-import sys
-from bs4 import UnicodeDammit
+from phantom.base_connector import BaseConnector
+
+from proofpoint_consts import *
 
 
 class RetVal(tuple):
@@ -464,7 +463,8 @@ class ProofpointConnector(BaseConnector):
                     .replace(microsecond=0).isoformat() + 'Z')
 
         params = {
-            'sinceTime': start_at
+            'sinceTime': start_at,
+            'format': 'json'
         }
 
         # Connect to the server
@@ -588,6 +588,7 @@ class ProofpointConnector(BaseConnector):
 if __name__ == '__main__':
 
     import argparse
+
     import pudb
 
     pudb.set_trace()
