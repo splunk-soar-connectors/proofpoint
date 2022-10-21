@@ -1,21 +1,28 @@
 # File: proofpoint_connector.py
-# Copyright (c) 2017-2021 Splunk Inc.
 #
-# Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
+# Copyright (c) 2017-2022 Splunk Inc.
 #
-
-from datetime import datetime
-from datetime import timedelta
-from bs4 import BeautifulSoup
-import requests
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
 import json
-from proofpoint_consts import *
+import sys
+from datetime import datetime, timedelta
 
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
+import requests
+from bs4 import BeautifulSoup, UnicodeDammit
 from phantom.action_result import ActionResult
-import sys
-from bs4 import UnicodeDammit
+from phantom.base_connector import BaseConnector
+
+from proofpoint_consts import *
 
 
 class RetVal(tuple):
@@ -407,7 +414,10 @@ class ProofpointConnector(BaseConnector):
             return action_result.get_status()
 
         if not (1 <= mins <= 60):
-            return action_result.set_status(phantom.APP_ERROR, "Asset configuration parameter, 'initial_ingestion_window', must be an integer between 1 and 60")
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                "Asset configuration parameter, 'initial_ingestion_window', must be an integer between 1 and 60"
+            )
 
         start_at = ((datetime.utcnow() - timedelta(minutes=mins))
                     .replace(microsecond=0).isoformat() + 'Z')
@@ -416,7 +426,8 @@ class ProofpointConnector(BaseConnector):
             self._state['last_poll'] = start_at
 
         params = {
-            'sinceTime': self._state['last_poll']
+            'sinceTime': self._state['last_poll'],
+            'format': 'json'
         }
 
         # Connect to the server
@@ -424,7 +435,8 @@ class ProofpointConnector(BaseConnector):
 
         if phantom.is_fail(ret_val):
             if "The sinceTime parameter gives a time too far into the past" in action_result.get_message():
-                action_result.append_to_message("It is possible the Phantom clock has drifted. Please re-sync it or consider lowering 'initial_ingestion_window' action parameter")
+                action_result.append_to_message("It is possible the Phantom clock has drifted."
+                " Please re-sync it or consider lowering 'initial_ingestion_window' action parameter")
             return action_result.get_status()
 
         config = self.get_config()
@@ -455,7 +467,8 @@ class ProofpointConnector(BaseConnector):
                     .replace(microsecond=0).isoformat() + 'Z')
 
         params = {
-            'sinceTime': start_at
+            'sinceTime': start_at,
+            'format': 'json'
         }
 
         # Connect to the server
@@ -468,7 +481,13 @@ class ProofpointConnector(BaseConnector):
         self.save_progress("Test Connectivity Passed")
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def get_campaign_details(self, param):
+    def _get_campaign(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.debug_print("Redirect to _get_campaign_details function.")
+        self._get_campaign_details(self, param)
+
+    def _get_campaign_details(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
         campaign_id = self._handle_py_ver_compat_for_input_str(param.get('campaign_id'))
 
@@ -478,12 +497,20 @@ class ProofpointConnector(BaseConnector):
 
         ret_val, data = self._make_rest_call(action_result, campaign_url, params=params)
         if phantom.is_fail(ret_val):
+            self.debug_print("Failed to get campaign details.")
             return action_result.get_status()
 
         action_result.add_data(data)
+        self.debug_print("successfully to get campaign details.")
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def get_forensic_data(self, param):
+    def _get_forensic(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.debug_print("Redirect to _get_forensic function.")
+        self._get_forensic_data(self, param)
+
+    def _get_forensic_data(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
         campaign_id = param.get('campaign_id')
         threat_id = param.get('threat_id')
@@ -509,9 +536,11 @@ class ProofpointConnector(BaseConnector):
         ret_val, data = self._make_rest_call(action_result,
                                              PP_API_PATH_FORENSICS, params=params)
         if phantom.is_fail(ret_val):
+            self.debug_print("Failed to get forensic data.")
             return action_result.get_status()
 
         action_result.add_data(data)
+        self.debug_print("successfully get forensic data.")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _decode_url(self, param):
@@ -559,10 +588,10 @@ class ProofpointConnector(BaseConnector):
 
         action_mapping = {
             'test_asset_connectivity': self._test_connectivity,
-            'get_campaign_details': self.get_campaign_details,
-            'get_campaign': self.get_campaign_details,
-            'get_forensic_data': self.get_forensic_data,
-            'get_forensic': self.get_forensic_data,
+            'get_campaign_details': self._get_campaign_details,
+            'get_campaign': self._get_campaign,
+            'get_forensic_data': self._get_forensic_data,
+            'get_forensic': self._get_forensic,
             'decode_url': self._decode_url,
             'on_poll': self._on_poll
         }
@@ -570,7 +599,7 @@ class ProofpointConnector(BaseConnector):
         action = self.get_action_identifier()
         action_execution_status = phantom.APP_SUCCESS
 
-        if action in action_mapping.keys():
+        if action in list(action_mapping.keys()):
             action_function = action_mapping[action]
             action_execution_status = action_function(param)
         return action_execution_status
@@ -579,6 +608,7 @@ class ProofpointConnector(BaseConnector):
 if __name__ == '__main__':
 
     import argparse
+
     import pudb
 
     pudb.set_trace()
