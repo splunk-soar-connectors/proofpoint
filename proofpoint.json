@@ -16,7 +16,7 @@
     "logo": "logo_proofpoint.svg",
     "logo_dark": "logo_proofpoint_dark.svg",
     "license": "Copyright (c) 2017-2022 Splunk Inc.",
-    "fips_compilence": false,
+    "fips_compliant": false,
     "configuration": {
         "username": {
             "data_type": "string",
