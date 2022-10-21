@@ -1,6 +1,6 @@
 # File: proofpoint_connector.py
 #
-# Copyright (c) 2017-2021 Splunk Inc.
+# Copyright (c) 2017-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -414,7 +414,10 @@ class ProofpointConnector(BaseConnector):
             return action_result.get_status()
 
         if not (1 <= mins <= 60):
-            return action_result.set_status(phantom.APP_ERROR, "Asset configuration parameter, 'initial_ingestion_window', must be an integer between 1 and 60")
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                "Asset configuration parameter, 'initial_ingestion_window', must be an integer between 1 and 60"
+            )
 
         start_at = ((datetime.utcnow() - timedelta(minutes=mins))
                     .replace(microsecond=0).isoformat() + 'Z')
@@ -432,7 +435,8 @@ class ProofpointConnector(BaseConnector):
 
         if phantom.is_fail(ret_val):
             if "The sinceTime parameter gives a time too far into the past" in action_result.get_message():
-                action_result.append_to_message("It is possible the Phantom clock has drifted. Please re-sync it or consider lowering 'initial_ingestion_window' action parameter")
+                action_result.append_to_message("It is possible the Phantom clock has drifted."
+                " Please re-sync it or consider lowering 'initial_ingestion_window' action parameter")
             return action_result.get_status()
 
         config = self.get_config()
