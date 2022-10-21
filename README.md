@@ -2,11 +2,11 @@
 # Proofpoint TAP
 
 Publisher: Splunk Community  
-Connector Version: 1\.2\.23  
+Connector Version: 2\.0\.0  
 Product Vendor: Proofpoint  
 Product Name: Targeted Attack Protection  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 4\.9\.39220  
+Minimum Product Version: 5\.3\.4  
 
 This App integrates with Proofpoint to implement ingestion and investigative actions
 
