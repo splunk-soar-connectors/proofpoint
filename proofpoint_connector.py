@@ -496,6 +496,7 @@ class ProofpointConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(data)
+        self.debug_print("successfully to get campaign details.")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def get_forensic_data(self, param):
@@ -529,6 +530,7 @@ class ProofpointConnector(BaseConnector):
             return action_result.get_status()
 
         action_result.add_data(data)
+        self.debug_print("successfully get forensic data.")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _decode_url(self, param):
