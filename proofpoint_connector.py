@@ -482,6 +482,7 @@ class ProofpointConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def get_campaign_details(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
         campaign_id = self._handle_py_ver_compat_for_input_str(param.get('campaign_id'))
 
@@ -491,12 +492,14 @@ class ProofpointConnector(BaseConnector):
 
         ret_val, data = self._make_rest_call(action_result, campaign_url, params=params)
         if phantom.is_fail(ret_val):
+            self.debug_print("Failed to get campaign details.")
             return action_result.get_status()
 
         action_result.add_data(data)
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def get_forensic_data(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
         campaign_id = param.get('campaign_id')
         threat_id = param.get('threat_id')
@@ -522,6 +525,7 @@ class ProofpointConnector(BaseConnector):
         ret_val, data = self._make_rest_call(action_result,
                                              PP_API_PATH_FORENSICS, params=params)
         if phantom.is_fail(ret_val):
+            self.debug_print("Failed to get forensic data.")
             return action_result.get_status()
 
         action_result.add_data(data)
