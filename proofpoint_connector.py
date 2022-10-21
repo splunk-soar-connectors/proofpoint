@@ -483,6 +483,11 @@ class ProofpointConnector(BaseConnector):
 
     def _get_campaign(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.debug_print("Redirect to _get_campaign_details function.")
+        self._get_campaign_details(self, param)
+
+    def _get_campaign_details(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
         campaign_id = self._handle_py_ver_compat_for_input_str(param.get('campaign_id'))
 
@@ -500,6 +505,11 @@ class ProofpointConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _get_forensic(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.debug_print("Redirect to _get_forensic function.")
+        self._get_forensic_data(self, param)
+
+    def _get_forensic_data(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
         campaign_id = param.get('campaign_id')
@@ -578,9 +588,9 @@ class ProofpointConnector(BaseConnector):
 
         action_mapping = {
             'test_asset_connectivity': self._test_connectivity,
-            'get_campaign_details': self._get_campaign,
+            'get_campaign_details': self._get_campaign_details,
             'get_campaign': self._get_campaign,
-            'get_forensic_data': self._get_forensic,
+            'get_forensic_data': self._get_forensic_data,
             'get_forensic': self._get_forensic,
             'decode_url': self._decode_url,
             'on_poll': self._on_poll
