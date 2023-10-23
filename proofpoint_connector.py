@@ -484,7 +484,7 @@ class ProofpointConnector(BaseConnector):
     def _get_campaign(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         self.debug_print("Redirect to _get_campaign_details function.")
-        self._get_campaign_details(self, param)
+        self._get_campaign_details(param)
 
     def _get_campaign_details(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
@@ -506,8 +506,8 @@ class ProofpointConnector(BaseConnector):
 
     def _get_forensic(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-        self.debug_print("Redirect to _get_forensic function.")
-        self._get_forensic_data(self, param)
+        self.debug_print("Redirect to _get_forensic_data function.")
+        self._get_forensic_data(param)
 
     def _get_forensic_data(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
