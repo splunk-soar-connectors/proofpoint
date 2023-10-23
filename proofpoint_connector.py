@@ -197,6 +197,8 @@ class ProofpointConnector(BaseConnector):
             action_result.add_debug_data({'r_headers': r.headers})
 
         # Process each 'Content-Type' of response separately
+        if not r.ok:
+            return self._process_html_response(r, action_result)
 
         # Process a json response
         if 'json' in r.headers.get('Content-Type', ''):
