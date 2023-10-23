@@ -4,6 +4,11 @@
     "description": "This App integrates with Proofpoint to implement ingestion and investigative actions",
     "type": "network security",
     "publisher": "Splunk Community",
+    "contributors": [
+        {
+            "name": "Brandan Neises"
+        }
+    ],
     "main_module": "proofpoint_connector.py",
     "app_version": "2.0.0",
     "utctime_updated": "2022-01-07T21:10:53.000000Z",
