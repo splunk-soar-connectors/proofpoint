@@ -94,29 +94,29 @@ class ProofpointConnector(BaseConnector):
             if e.args:
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    error_msg = e.args[1]
+                    error_message = e.args[1]
                 elif len(e.args) == 1:
                     error_code = ERROR_CODE_MESSAGE
-                    error_msg = e.args[0]
+                    error_message = e.args[0]
             else:
                 error_code = ERROR_CODE_MESSAGE
-                error_msg = ERROR_MESSAGE_UNAVAILABLE
+                error_message = ERROR_MESSAGE_UNAVAILABLE
         except:
             error_code = ERROR_CODE_MESSAGE
-            error_msg = ERROR_MESSAGE_UNAVAILABLE
+            error_message = ERROR_MESSAGE_UNAVAILABLE
 
         try:
-            error_msg = self._handle_py_ver_compat_for_input_str(error_msg)
+            error_message = self._handle_py_ver_compat_for_input_str(error_message)
         except TypeError:
-            error_msg = TYPE_ERROR_MESSAGE
+            error_message = TYPE_ERROR_MESSAGE
         except:
-            error_msg = ERROR_MESSAGE_UNAVAILABLE
+            error_message = ERROR_MESSAGE_UNAVAILABLE
 
         try:
             if error_code in ERROR_CODE_MESSAGE:
-                error_text = ERROR_MESSAGE_FORMAT_WITHOUT_CODE.format(error_msg)
+                error_text = ERROR_MESSAGE_FORMAT_WITHOUT_CODE.format(error_message)
             else:
-                error_text = ERROR_MESSAGE_FORMAT_WITH_CODE.format(error_code, error_msg)
+                error_text = ERROR_MESSAGE_FORMAT_WITH_CODE.format(error_code, error_message)
         except:
             self.debug_print(PARSE_ERROR_MESSAGE)
             error_text = PARSE_ERROR_MESSAGE
@@ -184,8 +184,8 @@ class ProofpointConnector(BaseConnector):
             message = SERVER_ERROR_MESSAGE.format(r.status_code, self._handle_py_ver_compat_for_input_str(resp_json['message']))
 
         if not message:
-            error_msg = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
-            message = SERVER_ERROR_MESSAGE.format(r.status_code, error_msg)
+            error_message = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
+            message = SERVER_ERROR_MESSAGE.format(r.status_code, error_message)
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, r, action_result):
@@ -213,8 +213,8 @@ class ProofpointConnector(BaseConnector):
             return self._process_empty_response(r, action_result)
 
         # everything else is actually an error at this point
-        error_msg = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
-        message = SERVER_ERROR_CANT_PROCESS_RESPONSE_MESSAGE.format(r.status_code, error_msg)
+        error_message = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
+        message = SERVER_ERROR_CANT_PROCESS_RESPONSE_MESSAGE.format(r.status_code, error_message)
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _make_rest_call(self, action_result, endpoint, method='get', **kwargs):
