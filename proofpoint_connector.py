@@ -61,7 +61,7 @@ class ProofpointConnector(BaseConnector):
         try:
             self._python_version = int(sys.version_info[0])
         except:
-            return self.set_status(phantom.APP_ERROR, ERR_FETCHING_PYTHON_VERSION)
+            return self.set_status(phantom.APP_ERROR, ERROR_FETCHING_PYTHON_VERSION)
 
         return phantom.APP_SUCCESS
 
@@ -80,7 +80,7 @@ class ProofpointConnector(BaseConnector):
             if input_str and self._python_version == 2:
                 input_str = UnicodeDammit(input_str).unicode_markup.encode('utf-8')
         except:
-            self.debug_print(PY_2TO3_ERR_MESSAGE)
+            self.debug_print(PY_2TO3_ERROR_MESSAGE)
 
         return input_str
 

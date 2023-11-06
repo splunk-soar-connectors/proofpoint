@@ -39,10 +39,10 @@ INVALID_NON_NEGATIVE_INTEGER_ERROR_MESSAGE = "Please provide a valid non-negativ
 INITIAL_INGESTION_WINDOW_KEY = "'initial_ingestion_window' configuration parameter"
 
 # Constant relating to 'handle_py_ver_compat_for_input_str'
-PY_2TO3_ERR_MESSAGE = "Error occurred while handling python 2to3 compatibility for the input string"
+PY_2TO3_ERROR_MESSAGE = "Error occurred while handling python 2to3 compatibility for the input string"
 
 # Constant relating to fetching the python major version
-ERR_FETCHING_PYTHON_VERSION = "Error occurred while fetching the Phantom server's Python major version"
+ERROR_FETCHING_PYTHON_VERSION = "Error occurred while fetching the Phantom server's Python major version"
 
 # Constants relating to error messages while processing response from server
 EMPTY_RESPONSE_MESSAGE = "Status code: {}. Empty response and no information in the header"
