@@ -1,6 +1,6 @@
 # File: proofpoint_connector.py
 #
-# Copyright (c) 2017-2022 Splunk Inc.
+# Copyright (c) 2017-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -171,8 +171,8 @@ class ProofpointConnector(BaseConnector):
         try:
             resp_json = r.json()
         except Exception as e:
-            error_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, JSON_PARSE_ERR_MSG.format(error_msg)), None)
+            error_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, JSON_PARSE_ERR_MSG.format(error_message)), None)
         else:
             if 200 <= r.status_code < 399:
                 return RetVal(phantom.APP_SUCCESS, resp_json)
@@ -239,8 +239,8 @@ class ProofpointConnector(BaseConnector):
         except requests.exceptions.ConnectionError:
             return RetVal(action_result.set_status(phantom.APP_ERROR, CONNECTION_REFUSED_ERR_MSG), resp_json)
         except Exception as e:
-            error_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, SERVER_CONNECTION_ERR_MSG.format(error_msg)), resp_json)
+            error_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, SERVER_CONNECTION_ERR_MSG.format(error_message)), resp_json)
 
         return self._process_response(res, action_result)
 

@@ -1,6 +1,6 @@
 # File: proofpoint_consts.py
 #
-# Copyright (c) 2017-2022 Splunk Inc.
+# Copyright (c) 2017-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 PP_API_BASE_URL = "https://tap-api-v2.proofpoint.com"
 PP_API_PATH_CLICKS_BLOCKED = "/v2/siem/clicks/blocked"
 PP_API_PATH_CLICKS_PERMITTED = "/v2/siem/clicks/permitted"
-PP_API_PATH_MESSAGES_BLOCKED = "/v2/siem/messages/blocked"
-PP_API_PATH_MESSAGES_DELIVERED = "/v2/siem/messages/delivered"
+PP_API_PATH_MSG_BLOCKED = "/v2/siem/messages/blocked"
+PP_API_PATH_MSG_DELIVERED = "/v2/siem/messages/delivered"
 PP_API_PATH_ISSUES = "/v2/siem/issues"
 PP_API_PATH_ALL = "/v2/siem/all"
 PP_API_PATH_CAMPAIGN = "/v2/campaign/{}"
