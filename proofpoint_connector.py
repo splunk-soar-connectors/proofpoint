@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 
 import phantom.app as phantom
 import requests
-from bs4 import BeautifulSoup, UnicodeDammit
+from bs4 import BeautifulSoup
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
@@ -57,32 +57,11 @@ class ProofpointConnector(BaseConnector):
             'Accept': 'application/json'
         }
 
-        # Fetching the Python major version
-        try:
-            self._python_version = int(sys.version_info[0])
-        except:
-            return self.set_status(phantom.APP_ERROR, ERROR_FETCHING_PYTHON_VERSION)
-
         return phantom.APP_SUCCESS
 
     def finalize(self):
         self.save_state(self._state)
         return phantom.APP_SUCCESS
-
-    def _handle_py_ver_compat_for_input_str(self, input_str):
-        """
-        This method returns the encoded|original string based on the Python version.
-        :param input_str: Input string to be processed
-        :return: input_str (Processed input string based on following logic 'input_str - Python 3; encoded input_str - Python 2')
-        """
-
-        try:
-            if input_str and self._python_version == 2:
-                input_str = UnicodeDammit(input_str).unicode_markup.encode('utf-8')
-        except:
-            self.debug_print(PY_2TO3_ERROR_MESSAGE)
-
-        return input_str
 
     def _get_error_message_from_exception(self, e):
         """ This method is used to get appropriate error message from the exception.
@@ -103,13 +82,6 @@ class ProofpointConnector(BaseConnector):
                 error_message = ERROR_MESSAGE_UNAVAILABLE
         except:
             error_code = ERROR_CODE_MESSAGE
-            error_message = ERROR_MESSAGE_UNAVAILABLE
-
-        try:
-            error_message = self._handle_py_ver_compat_for_input_str(error_message)
-        except TypeError:
-            error_message = TYPE_ERROR_MESSAGE
-        except:
             error_message = ERROR_MESSAGE_UNAVAILABLE
 
         try:
@@ -160,7 +132,6 @@ class ProofpointConnector(BaseConnector):
         except:
             error_text = HTML_RESPONSE_PARSE_ERROR_MESSAGE
 
-        error_text = self._handle_py_ver_compat_for_input_str(error_text)
         message = SERVER_ERROR_MESSAGE.format(status_code, error_text)
         message = message.replace('{', '{{').replace('}', '}}')
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
@@ -181,10 +152,10 @@ class ProofpointConnector(BaseConnector):
 
         # Check for message in error
         if resp_json.get('message'):
-            message = SERVER_ERROR_MESSAGE.format(r.status_code, self._handle_py_ver_compat_for_input_str(resp_json['message']))
+            message = SERVER_ERROR_MESSAGE.format(r.status_code, resp_json['message'])
 
         if not message:
-            error_message = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
+            error_message = r.text.replace('{', '{{').replace('}', '}}')
             message = SERVER_ERROR_MESSAGE.format(r.status_code, error_message)
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -213,7 +184,7 @@ class ProofpointConnector(BaseConnector):
             return self._process_empty_response(r, action_result)
 
         # everything else is actually an error at this point
-        error_message = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
+        error_message = r.text.replace('{', '{{').replace('}', '}}')
         message = SERVER_ERROR_CANT_PROCESS_RESPONSE_MESSAGE.format(r.status_code, error_message)
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -224,9 +195,7 @@ class ProofpointConnector(BaseConnector):
 
         # Create a URL to connect to
         url = '{0}{1}'.format(PP_API_BASE_URL, endpoint)
-        if self._python_version == 2:
-            url = self._handle_py_ver_compat_for_input_str(url).decode('utf-8')
-        self._username = self._handle_py_ver_compat_for_input_str(self._username)
+
         self._auth = (self._username, self._password)
 
         try:
@@ -491,7 +460,7 @@ class ProofpointConnector(BaseConnector):
     def _get_campaign_details(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
-        campaign_id = self._handle_py_ver_compat_for_input_str(param.get('campaign_id'))
+        campaign_id = param.get('campaign_id')
 
         campaign_url = PP_API_PATH_CAMPAIGN.format(campaign_id)
 
@@ -555,7 +524,7 @@ class ProofpointConnector(BaseConnector):
 
         params = {}
         url_list = []
-        url = self._handle_py_ver_compat_for_input_str(param['url'])
+        url = param['url']
 
         # The Decode API allows for multiple values. Split the parameter by ,
         url_list = [x.strip() for x in url.split(',')]
