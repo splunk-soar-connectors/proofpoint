@@ -38,9 +38,6 @@ INVALID_INTEGER_ERROR_MESSAGE = "Please provide a valid integer value in the {}"
 INVALID_NON_NEGATIVE_INTEGER_ERROR_MESSAGE = "Please provide a valid non-negative integer value in the {}"
 INITIAL_INGESTION_WINDOW_KEY = "'initial_ingestion_window' configuration parameter"
 
-# Constant relating to fetching the python major version
-ERROR_FETCHING_PYTHON_VERSION = "Error occurred while fetching the Phantom server's Python major version"
-
 # Constants relating to error messages while processing response from server
 EMPTY_RESPONSE_MESSAGE = "Status code: {}. Empty response and no information in the header"
 HTML_RESPONSE_PARSE_ERROR_MESSAGE = "Cannot parse error details"
