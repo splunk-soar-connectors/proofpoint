@@ -10,7 +10,7 @@
         }
     ],
     "main_module": "proofpoint_connector.py",
-    "app_version": "2.0.0",
+    "app_version": "2.1.0",
     "utctime_updated": "2022-01-07T21:10:53.000000Z",
     "package_name": "phantom_proofpoint",
     "python_version": "3",
