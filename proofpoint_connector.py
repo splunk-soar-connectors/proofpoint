@@ -1,6 +1,6 @@
 # File: proofpoint_connector.py
 #
-# Copyright (c) 2017-2022 Splunk Inc.
+# Copyright (c) 2017-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 
 import phantom.app as phantom
 import requests
-from bs4 import BeautifulSoup, UnicodeDammit
+from bs4 import BeautifulSoup
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
@@ -57,32 +57,11 @@ class ProofpointConnector(BaseConnector):
             'Accept': 'application/json'
         }
 
-        # Fetching the Python major version
-        try:
-            self._python_version = int(sys.version_info[0])
-        except:
-            return self.set_status(phantom.APP_ERROR, ERR_FETCHING_PYTHON_VERSION)
-
         return phantom.APP_SUCCESS
 
     def finalize(self):
         self.save_state(self._state)
         return phantom.APP_SUCCESS
-
-    def _handle_py_ver_compat_for_input_str(self, input_str):
-        """
-        This method returns the encoded|original string based on the Python version.
-        :param input_str: Input string to be processed
-        :return: input_str (Processed input string based on following logic 'input_str - Python 3; encoded input_str - Python 2')
-        """
-
-        try:
-            if input_str and self._python_version == 2:
-                input_str = UnicodeDammit(input_str).unicode_markup.encode('utf-8')
-        except:
-            self.debug_print(PY_2TO3_ERR_MSG)
-
-        return input_str
 
     def _get_error_message_from_exception(self, e):
         """ This method is used to get appropriate error message from the exception.
@@ -94,32 +73,25 @@ class ProofpointConnector(BaseConnector):
             if e.args:
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    error_msg = e.args[1]
+                    error_message = e.args[1]
                 elif len(e.args) == 1:
-                    error_code = ERR_CODE_MSG
-                    error_msg = e.args[0]
+                    error_code = ERROR_CODE_MESSAGE
+                    error_message = e.args[0]
             else:
-                error_code = ERR_CODE_MSG
-                error_msg = ERR_MSG_UNAVAILABLE
+                error_code = ERROR_CODE_MESSAGE
+                error_message = ERROR_MESSAGE_UNAVAILABLE
         except:
-            error_code = ERR_CODE_MSG
-            error_msg = ERR_MSG_UNAVAILABLE
+            error_code = ERROR_CODE_MESSAGE
+            error_message = ERROR_MESSAGE_UNAVAILABLE
 
         try:
-            error_msg = self._handle_py_ver_compat_for_input_str(error_msg)
-        except TypeError:
-            error_msg = TYPE_ERR_MSG
-        except:
-            error_msg = ERR_MSG_UNAVAILABLE
-
-        try:
-            if error_code in ERR_CODE_MSG:
-                error_text = ERR_MSG_FORMAT_WITHOUT_CODE.format(error_msg)
+            if error_code not in ERROR_CODE_MESSAGE:
+                error_text = ERROR_MESSAGE_FORMAT_WITHOUT_CODE.format(error_message)
             else:
-                error_text = ERR_MSG_FORMAT_WITH_CODE.format(error_code, error_msg)
+                error_text = ERROR_MESSAGE_FORMAT_WITH_CODE.format(error_code, error_message)
         except:
-            self.debug_print(PARSE_ERR_MSG)
-            error_text = PARSE_ERR_MSG
+            self.debug_print(PARSE_ERROR_MESSAGE)
+            error_text = PARSE_ERROR_MESSAGE
 
         return error_text
 
@@ -127,14 +99,14 @@ class ProofpointConnector(BaseConnector):
         if parameter is not None:
             try:
                 if not float(parameter).is_integer():
-                    return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERR_MSG.format(key)), None
+                    return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERROR_MESSAGE.format(key)), None
 
                 parameter = int(parameter)
             except:
-                return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERR_MSG.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, INVALID_INTEGER_ERROR_MESSAGE.format(key)), None
 
             if parameter < 0:
-                return action_result.set_status(phantom.APP_ERROR, INVALID_NON_NEGATIVE_INTEGER_ERR_MSG.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, INVALID_NON_NEGATIVE_INTEGER_ERROR_MESSAGE.format(key)), None
 
         return phantom.APP_SUCCESS, parameter
 
@@ -142,7 +114,7 @@ class ProofpointConnector(BaseConnector):
         if response.status_code == 200:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, EMPTY_RESPONSE_MSG.format(response.status_code)), None)
+        return RetVal(action_result.set_status(phantom.APP_ERROR, EMPTY_RESPONSE_MESSAGE.format(response.status_code)), None)
 
     def _process_html_response(self, response, action_result):
 
@@ -158,10 +130,9 @@ class ProofpointConnector(BaseConnector):
             split_lines = [ x.strip() for x in split_lines if x.strip() ]
             error_text = ('\n').join(split_lines)
         except:
-            error_text = HTML_RESPONSE_PARSE_ERR_MSG
+            error_text = HTML_RESPONSE_PARSE_ERROR_MESSAGE
 
-        error_text = self._handle_py_ver_compat_for_input_str(error_text)
-        message = SERVER_ERR_MSG.format(status_code, error_text)
+        message = SERVER_ERROR_MESSAGE.format(status_code, error_text)
         message = message.replace('{', '{{').replace('}', '}}')
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -171,8 +142,8 @@ class ProofpointConnector(BaseConnector):
         try:
             resp_json = r.json()
         except Exception as e:
-            error_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, JSON_PARSE_ERR_MSG.format(error_msg)), None)
+            error_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, JSON_PARSE_ERROR_MESSAGE.format(error_message)), None)
         else:
             if 200 <= r.status_code < 399:
                 return RetVal(phantom.APP_SUCCESS, resp_json)
@@ -181,11 +152,11 @@ class ProofpointConnector(BaseConnector):
 
         # Check for message in error
         if resp_json.get('message'):
-            message = SERVER_ERR_MSG.format(r.status_code, self._handle_py_ver_compat_for_input_str(resp_json['message']))
+            message = SERVER_ERROR_MESSAGE.format(r.status_code, resp_json['message'])
 
         if not message:
-            error_msg = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
-            message = SERVER_ERR_MSG.format(r.status_code, error_msg)
+            error_message = r.text.replace('{', '{{').replace('}', '}}')
+            message = SERVER_ERROR_MESSAGE.format(r.status_code, error_message)
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, r, action_result):
@@ -197,6 +168,8 @@ class ProofpointConnector(BaseConnector):
             action_result.add_debug_data({'r_headers': r.headers})
 
         # Process each 'Content-Type' of response separately
+        if not r.ok:
+            return self._process_html_response(r, action_result)
 
         # Process a json response
         if 'json' in r.headers.get('Content-Type', ''):
@@ -211,8 +184,8 @@ class ProofpointConnector(BaseConnector):
             return self._process_empty_response(r, action_result)
 
         # everything else is actually an error at this point
-        error_msg = self._handle_py_ver_compat_for_input_str(r.text.replace('{', '{{').replace('}', '}}'))
-        message = SERVER_ERR_CANT_PROCESS_RESPONSE_MSG.format(r.status_code, error_msg)
+        error_message = r.text.replace('{', '{{').replace('}', '}}')
+        message = SERVER_ERROR_CANT_PROCESS_RESPONSE_MESSAGE.format(r.status_code, error_message)
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _make_rest_call(self, action_result, endpoint, method='get', **kwargs):
@@ -222,9 +195,7 @@ class ProofpointConnector(BaseConnector):
 
         # Create a URL to connect to
         url = '{0}{1}'.format(PP_API_BASE_URL, endpoint)
-        if self._python_version == 2:
-            url = self._handle_py_ver_compat_for_input_str(url).decode('utf-8')
-        self._username = self._handle_py_ver_compat_for_input_str(self._username)
+
         self._auth = (self._username, self._password)
 
         try:
@@ -235,10 +206,10 @@ class ProofpointConnector(BaseConnector):
         try:
             res = request_func(url, auth=self._auth, headers=self._headers, **kwargs)
         except requests.exceptions.ConnectionError:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, CONNECTION_REFUSED_ERR_MSG), resp_json)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, CONNECTION_REFUSED_ERROR_MESSAGE), resp_json)
         except Exception as e:
-            error_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, SERVER_CONNECTION_ERR_MSG.format(error_msg)), resp_json)
+            error_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, SERVER_CONNECTION_ERROR_MESSAGE.format(error_message)), resp_json)
 
         return self._process_response(res, action_result)
 
@@ -484,12 +455,12 @@ class ProofpointConnector(BaseConnector):
     def _get_campaign(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         self.debug_print("Redirect to _get_campaign_details function.")
-        self._get_campaign_details(self, param)
+        self._get_campaign_details(param)
 
     def _get_campaign_details(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(param))
-        campaign_id = self._handle_py_ver_compat_for_input_str(param.get('campaign_id'))
+        campaign_id = param.get('campaign_id')
 
         campaign_url = PP_API_PATH_CAMPAIGN.format(campaign_id)
 
@@ -506,8 +477,8 @@ class ProofpointConnector(BaseConnector):
 
     def _get_forensic(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-        self.debug_print("Redirect to _get_forensic function.")
-        self._get_forensic_data(self, param)
+        self.debug_print("Redirect to _get_forensic_data function.")
+        self._get_forensic_data(param)
 
     def _get_forensic_data(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
@@ -553,7 +524,7 @@ class ProofpointConnector(BaseConnector):
 
         params = {}
         url_list = []
-        url = self._handle_py_ver_compat_for_input_str(param['url'])
+        url = param['url']
 
         # The Decode API allows for multiple values. Split the parameter by ,
         url_list = [x.strip() for x in url.split(',')]
@@ -618,12 +589,14 @@ if __name__ == '__main__':
     argparser.add_argument('input_test_json', help='Input Test JSON file')
     argparser.add_argument('-u', '--username', help='username', required=False)
     argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument('-v', '--verify', action='store_true', help='verify', required=False, default=False)
 
     args = argparser.parse_args()
     session_id = None
 
     username = args.username
     password = args.password
+    verify = args.verify
 
     if (username is not None and password is None):
 
@@ -635,7 +608,7 @@ if __name__ == '__main__':
         try:
             print("Accessing the Login page")
             login_url = BaseConnector._get_phantom_base_url() + "login"
-            r = requests.get(login_url, verify=False)
+            r = requests.get(login_url, verify=verify)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -648,15 +621,15 @@ if __name__ == '__main__':
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=verify, data=data, headers=headers)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platfrom. Error: " + str(e))
-            exit(1)
+            sys.exit(1)
 
     if (len(sys.argv) < 2):
         print("No test json specified as input")
-        exit(0)
+        sys.exit(0)
 
     with open(sys.argv[1]) as f:
         in_json = f.read()
@@ -672,4 +645,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)
