@@ -85,7 +85,7 @@ class ProofpointConnector(BaseConnector):
             error_message = ERROR_MESSAGE_UNAVAILABLE
 
         try:
-            if error_code in ERROR_CODE_MESSAGE:
+            if error_code not in ERROR_CODE_MESSAGE:
                 error_text = ERROR_MESSAGE_FORMAT_WITHOUT_CODE.format(error_message)
             else:
                 error_text = ERROR_MESSAGE_FORMAT_WITH_CODE.format(error_code, error_message)
