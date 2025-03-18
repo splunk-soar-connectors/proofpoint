@@ -1,6 +1,6 @@
 # File: proofpoint_consts.py
 #
-# Copyright (c) 2017-2023 Splunk Inc.
+# Copyright (c) 2017-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,8 +41,8 @@ INITIAL_INGESTION_WINDOW_KEY = "'initial_ingestion_window' configuration paramet
 # Constants relating to error messages while processing response from server
 EMPTY_RESPONSE_MESSAGE = "Status code: {}. Empty response and no information in the header"
 HTML_RESPONSE_PARSE_ERROR_MESSAGE = "Cannot parse error details"
-JSON_PARSE_ERROR_MESSAGE = 'Unable to parse JSON response. Error: {}'
-SERVER_ERROR_MESSAGE = 'Error from server. Status Code: {} Data from server: {}'
+JSON_PARSE_ERROR_MESSAGE = "Unable to parse JSON response. Error: {}"
+SERVER_ERROR_MESSAGE = "Error from server. Status Code: {} Data from server: {}"
 SERVER_ERROR_CANT_PROCESS_RESPONSE_MESSAGE = "Can't process response from server. Status Code: {} Data from server: {}"
 CONNECTION_REFUSED_ERROR_MESSAGE = "Error Details: Connection Refused from the Server"
 SERVER_CONNECTION_ERROR_MESSAGE = "Error Connecting to server. Details: {}"
