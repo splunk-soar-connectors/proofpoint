@@ -20,7 +20,7 @@
     "min_phantom_version": "5.5.0",
     "logo": "logo_proofpoint.svg",
     "logo_dark": "logo_proofpoint_dark.svg",
-    "license": "Copyright (c) 2017-2023 Splunk Inc.",
+    "license": "Copyright (c) 2017-2025 Splunk Inc.",
     "fips_compliant": false,
     "configuration": {
         "username": {
