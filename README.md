@@ -1,7 +1,7 @@
 # Proofpoint TAP
 
 Publisher: Splunk Community \
-Connector Version: 2.1.0 \
+Connector Version: 2.1.1 \
 Product Vendor: Proofpoint \
 Product Name: Targeted Attack Protection \
 Minimum Product Version: 5.5.0
