@@ -1,9 +1,9 @@
 # Proofpoint TAP
 
-Publisher: Splunk Community \
-Connector Version: 2.1.1 \
-Product Vendor: Proofpoint \
-Product Name: Targeted Attack Protection \
+Publisher: Splunk Community <br>
+Connector Version: 2.1.1 <br>
+Product Vendor: Proofpoint <br>
+Product Name: Targeted Attack Protection <br>
 Minimum Product Version: 5.5.0
 
 This App integrates with Proofpoint to implement ingestion and investigative actions
@@ -24,19 +24,19 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - This action runs a quick query on the server to check the connection and credentials \
-[on poll](#action-on-poll) - Callback action for the On Poll ingest functionality \
-[get campaign data](#action-get-campaign-data) - Fetch detailed information for a given campaign (deprecated) \
-[get campaign](#action-get-campaign) - Fetch detailed information for a given campaign \
-[get forensic data](#action-get-forensic-data) - Fetch forensic information for a given threat or campaign (deprecated) \
-[get forensic](#action-get-forensic) - Fetch forensic information for a given threat or campaign \
+[test connectivity](#action-test-connectivity) - This action runs a quick query on the server to check the connection and credentials <br>
+[on poll](#action-on-poll) - Callback action for the On Poll ingest functionality <br>
+[get campaign data](#action-get-campaign-data) - Fetch detailed information for a given campaign (deprecated) <br>
+[get campaign](#action-get-campaign) - Fetch detailed information for a given campaign <br>
+[get forensic data](#action-get-forensic-data) - Fetch forensic information for a given threat or campaign (deprecated) <br>
+[get forensic](#action-get-forensic) - Fetch forensic information for a given threat or campaign <br>
 [decode url](#action-decode-url) - Decode Proofpoint rewritten URL(s)
 
 ## action: 'test connectivity'
 
 This action runs a quick query on the server to check the connection and credentials
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -51,7 +51,7 @@ No Output
 
 Callback action for the On Poll ingest functionality
 
-Type: **ingest** \
+Type: **ingest** <br>
 Read only: **True**
 
 For the 'start_time' parameter, the default is the past 10 days and for the 'end_time' parameter, the default is now.
@@ -74,7 +74,7 @@ No Output
 
 Fetch detailed information for a given campaign (deprecated)
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 This action is deprecated due to action name change. Please use <b>get campaign</b> instead.
@@ -116,7 +116,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch detailed information for a given campaign
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -156,7 +156,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch forensic information for a given threat or campaign (deprecated)
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 This action is deprecated due to action name change. Please use <b>get forensic</b> instead.
@@ -221,7 +221,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch forensic information for a given threat or campaign
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -284,7 +284,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Decode Proofpoint rewritten URL(s)
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -315,7 +315,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
