@@ -1,3 +1,3 @@
 **Unreleased**
 
-* Chore: update connector development hooks.
+* Encode campaign IDs as a single URL path segment before calling the Proofpoint TAP campaign endpoint.
