@@ -1,3 +1,1 @@
 **Unreleased**
-
-* Encode campaign IDs as a single URL path segment before calling the Proofpoint TAP campaign endpoint.
