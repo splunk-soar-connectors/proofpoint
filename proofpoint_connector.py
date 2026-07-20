@@ -1,6 +1,6 @@
 # File: proofpoint_connector.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 import json
 import sys
 from datetime import datetime, timedelta
+from urllib.parse import quote
 
 import phantom.app as phantom
 import requests
@@ -441,7 +442,7 @@ class ProofpointConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(param))
         campaign_id = param.get("campaign_id")
 
-        campaign_url = PP_API_PATH_CAMPAIGN.format(campaign_id)
+        campaign_url = PP_API_PATH_CAMPAIGN.format(quote(str(campaign_id), safe=""))
 
         params = {"format": "json"}
 
