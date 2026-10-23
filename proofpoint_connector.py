@@ -14,7 +14,7 @@
 # and limitations under the License.
 import json
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 
 import phantom.app as phantom
@@ -381,7 +381,7 @@ class ProofpointConnector(BaseConnector):
                 phantom.APP_ERROR, "Asset configuration parameter, 'initial_ingestion_window', must be an integer between 1 and 60"
             )
 
-        start_at = (datetime.utcnow() - timedelta(minutes=mins)).replace(microsecond=0).isoformat() + "Z"
+        start_at = (datetime.now(timezone.utc) - timedelta(minutes=mins)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
         if not self._state or "last_poll" not in self._state or self._state["last_poll"] < start_at:
             self._state["last_poll"] = start_at
@@ -419,7 +419,7 @@ class ProofpointConnector(BaseConnector):
 
     def _test_connectivity(self, param):
         action_result = self.add_action_result(ActionResult(param))
-        start_at = (datetime.utcnow() - timedelta(minutes=5)).replace(microsecond=0).isoformat() + "Z"
+        start_at = (datetime.now(timezone.utc) - timedelta(minutes=5)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
         params = {"sinceTime": start_at, "format": "json"}
 
